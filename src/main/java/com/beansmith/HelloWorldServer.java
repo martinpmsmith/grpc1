@@ -16,14 +16,13 @@
 
 package com.beansmith;
 
-import io.grpc.BindableService;
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
-import io.grpc.ServerInterceptors;
+import io.grpc.*;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+
+import static com.beansmith.GrpcServerRequestInterceptor.*;
 
 /**
  * Server that manages startup/shutdown of a {@code Greeter} server.
@@ -87,8 +86,12 @@ public class HelloWorldServer {
 
         @Override
         public void sayHello(Hello.HelloRequest req, StreamObserver<Hello.HelloReply> responseObserver) {
+            Context context = Context.current();
+            var val = CX.get(context);
+
             String msg = "Hello " + req.getName() + " "  + req.getSurname() + "\n" + req.getMessage() ;
-            Hello.HelloReply reply = Hello.HelloReply.newBuilder().setMessage(msg).build();
+            msg += " x:" +CX.get(context) + " y:" + CY.get(context) + " z:" + CZ.get(context) ;
+            Hello.HelloReply reply = Hello.HelloReply.newBuilder().setMessage(msg).setHeaderx(CX.get(context)).build();
             responseObserver.onNext(reply);
             responseObserver.onCompleted();
         }
