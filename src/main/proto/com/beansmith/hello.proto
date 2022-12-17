@@ -7,6 +7,8 @@ service Greeter {
   rpc SayHello (HelloRequest) returns (HelloReply) {}
   // Sends another greeting
   rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
+  rpc fetchTableData (HelloRequest) returns (TableData) {}
+  rpc sendTableData (TableData) returns (TableData) {}
 }
 
 // The request message containing the user's name.
@@ -20,4 +22,39 @@ message HelloRequest {
 message HelloReply {
   string message = 1;
   string headerx = 2;
+}
+
+message ErrorReponse {
+  string message = 1;
+  string stack = 2;
+}
+
+message KevValuePair {
+  string key = 1;
+  DataValue value = 2;
+}
+
+message DataValue {
+  oneof value {
+    bool  bool_value = 1;
+    float float_value = 2;
+    int32 int_value = 3;
+    double  double_value = 15;
+    int64 long_value = 4;
+    uint32 uint_value = 5;
+    uint64 ulong_value = 6;
+    sint32 sint_value = 7;
+    sint64 slong_value = 8;
+    string string_value = 9;
+    fixed32 fixed32_value = 10;
+    fixed64 fixed64_value = 11;
+    sfixed32 sfixed32_value = 12;
+    sfixed64 sfixed64_value = 13;
+    bytes bytes_value = 14;
+  }
+}
+message TableData {
+  string name = 1;
+  repeated KevValuePair kvp = 2;
+  repeated TableData child = 3;
 }
