@@ -18,6 +18,7 @@ package com.beansmith;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.Message;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import io.grpc.Context;
@@ -48,6 +49,34 @@ public class HelloWorldServer {
         final HelloWorldServer server = new HelloWorldServer();
         server.start();
         server.blockUntilShutdown();
+    }
+
+    private static void processEntityData(Hello.EntityData entityData) {
+        for (Hello.KevValuePair kvp : entityData.getKvpList()) {
+            Hello.DataValue.ValueCase vcase = kvp.getValue().getValueCase();
+
+            switch (vcase) {
+                case INT_VALUE:
+                    break;
+                case BOOL_VALUE:
+                    break;
+                case DOUBLE_VALUE:
+                    break;
+                case LONG_VALUE:
+                    break;
+                case BYTES_VALUE:  //ByteString
+                    break;
+                case FLOAT_VALUE:
+                    break;
+                case STRING_VALUE:
+                    break;
+                case VALUE_NOT_SET:
+                    break;
+            }
+        }
+        for (Hello.EntityData child : entityData.getChildList()) {
+            HelloWorldServer.processEntityData(child);
+        }
     }
 
     private void start() throws IOException {
@@ -105,6 +134,21 @@ public class HelloWorldServer {
         @Override
         public void sayHello(Hello.HelloRequest req, StreamObserver<Hello.HelloReply> responseObserver) {
             try {
+                MapperEntity mp =  MapperEntity.builder()
+                        .boolVal(true)
+                        .doubleVal(12.2323)
+                        .doubleVal(12.2323)
+                        .floatVal(12.123f)
+                        .intVal(12)
+                        .thisWasHere("existing value")
+                        .longVal(12L)
+                        .soWasI(1234L)
+                        .stringVal("this is a string")
+                        .build();
+
+                Message result = Mapper.pojoToProto(mp, Hello.MapperSample.class) ;
+                MapperEntity mp2 = (MapperEntity) Mapper.protoToEntityBase(result, MapperEntity.class);
+                logger.info("\n\n" + result.toString());
                 Context context = Context.current();
                 var val = CX.get(context);
 
@@ -120,9 +164,9 @@ public class HelloWorldServer {
         }
 
         @Override
-        public void fetchTableData(Hello.HelloRequest request, StreamObserver<Hello.TableData> responseObserver) {
+        public void fetchEntityData(Hello.HelloRequest request, StreamObserver<Hello.EntityData> responseObserver) {
 
-            Hello.TableData.Builder builder = Hello.TableData.newBuilder();
+            Hello.EntityData.Builder builder = Hello.EntityData.newBuilder();
             builder.setName("parent");
             builder.addKvp(0,
                     Hello.KevValuePair.newBuilder().setKey("one").setValue(Hello.DataValue.newBuilder()
@@ -133,7 +177,7 @@ public class HelloWorldServer {
             builder.addKvp(2,
                     Hello.KevValuePair.newBuilder().setKey("looong").setValue(Hello.DataValue.newBuilder()
                             .setLongValue(12345L)));
-            Hello.TableData.Builder child = Hello.TableData.newBuilder();
+            Hello.EntityData.Builder child = Hello.EntityData.newBuilder();
             child.setName("child");
             child.addKvp(0,
                     Hello.KevValuePair.newBuilder().setKey("one").setValue(Hello.DataValue.newBuilder()
@@ -147,48 +191,23 @@ public class HelloWorldServer {
         }
 
         @Override
-        public void sendTableData(Hello.TableData request, StreamObserver<Hello.TableData> responseObserver) {
+        public void sendEntityData(Hello.EntityData request, StreamObserver<Hello.EntityData> responseObserver) {
             System.out.println(request);
-
-            HelloWorldServer.processTableData(request);
+            HelloWorldServer.processEntityData(request);
         }
 
+        @Override
+        public void sendMapperSample(Hello.MapperSample request,
+                                     StreamObserver<Hello.MapperSample> responseObserver) {
 
-    }
-
-    private static void processTableData(Hello.TableData tableData) {
-        for (Hello.KevValuePair kvp : tableData.getKvpList()) {
-            Hello.DataValue.ValueCase vcase = kvp.getValue().getValueCase();
-
-            switch (vcase) {
-                case INT_VALUE:
-                case SINT_VALUE:
-                case FIXED32_VALUE:
-                case SFIXED32_VALUE:
-                    break;
-                case BOOL_VALUE:
-                    break;
-                case DOUBLE_VALUE:
-                    break;
-                case LONG_VALUE:
-                case SFIXED64_VALUE:
-                case FIXED64_VALUE:
-                case SLONG_VALUE:
-                case ULONG_VALUE:
-                case UINT_VALUE:
-                    break;
-                case BYTES_VALUE:  //ByteString
-                    break;
-                case FLOAT_VALUE:
-                    break;
-                case STRING_VALUE:
-                    break;
-                case VALUE_NOT_SET:
-                    break;
-            }
-        }
-        for (Hello.TableData child: tableData.getChildList()){
-            HelloWorldServer.processTableData(child);
+//            MapperPojo pojo = MapperPojo.builder()
+//                    .doubleVal(new Double(123)).iWasHere("Exisitng var").longVal(12345l).build();
+//
+//            Mapper.pojoToProto(pojo, Hello.MapperSample.class);
+//            GeneratedMessageV3.Builder<?> builder = Hello.EntityData.class.getDeclaredMethod("newBuilder").invoke(null);
+//            Descriptors.FieldDescriptor fd = builder.getDescriptorForType().findFieldByName("name");
+//            builder.setField(fd, "junk");
+            int x = 1;
         }
     }
 }
