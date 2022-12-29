@@ -29,6 +29,10 @@ import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -134,21 +138,59 @@ public class HelloWorldServer {
         @Override
         public void sayHello(Hello.HelloRequest req, StreamObserver<Hello.HelloReply> responseObserver) {
             try {
-                MapperEntity mp =  MapperEntity.builder()
-                        .boolVal(true)
-                        .doubleVal(12.2323)
-                        .doubleVal(12.2323)
-                        .floatVal(12.123f)
-                        .intVal(12)
-                        .thisWasHere("existing value")
-                        .longVal(12L)
-                        .soWasI(1234L)
-                        .stringVal("this is a string")
-                        .build();
+                TestEntity mp = new TestEntity();
+                mp.setBoolVal(true);
+                mp.setPrimaryKey(12L);
+                mp.setDoubleVal(12.2323);
+                mp.setFloatVal(12.123f);
+                mp.setIntVal(12);
+                mp.setThisWasHere("existing value");
+                mp.setLongVal(12L);
+                mp.setSoWasI(1234L);
+                mp.setStringVal("this is a string");
 
-                Message result = Mapper.pojoToProto(mp, Hello.MapperSample.class) ;
-                MapperEntity mp2 = (MapperEntity) Mapper.protoToEntityBase(result, MapperEntity.class);
+                List<Map<String, Object>> rows = new ArrayList();
+                Map<String, Object> row = new HashMap<>();
+                row.put("primary_key", 12L);
+                row.put("bool_val", true);
+                row.put("double_val", 12.2323);
+                row.put("float_val", 12.123f);
+                row.put("int_val", 12);
+                row.put("this_was_here", "existing value");
+                row.put("so_was_i", 1234L);
+                row.put("long_val", 12L);
+                row.put("string_val", "this is a string");
+                Map<String, Object> row2 = new HashMap<>();
+                row2.put("primary_key", 14L);
+                row2.put("bool_val", false);
+                row2.put("double_val", null);
+                row2.put("float_val", 213.123f);
+                row2.put("int_val", 12333);
+                row2.put("this_was_here", null);
+                row2.put("so_was_i", 1234L);
+                row2.put("long_val", 12L);
+                row2.put("string_val", "");
+                rows.add(row);
+                rows.add(row2);
+
+                Message result = EntityMapper.pojoToProto(mp, Hello.MapperSample.class);
+                TestEntity mp2 = (TestEntity) EntityMapper.protoToEntityBase(result, TestEntity.class);
+
+                Map<String, String> queries = EntityMapper.insertQueriesForEntityBase(mp);
+                Map<String, String> queries2 = EntityMapper.updateQueriesForEntityBase(mp);
+                List<EntityBase> data = EntityMapper.entityBaseListFromQueryResult(TestEntity.class, rows);
+
                 logger.info("\n\n" + result.toString());
+                logger.info("\n\n" + mp2.toString());
+                logger.info("\n\n" + queries.get("entity_test").toString());
+                logger.info("\n\n" + queries2.get("entity_test").toString());
+
+                int rowNo = 1;
+                for (EntityBase ent : data) {
+                    logger.info("\n\n----- row# " + rowNo + "\n" + ent.toString());
+                    rowNo++;
+                }
+
                 Context context = Context.current();
                 var val = CX.get(context);
 
