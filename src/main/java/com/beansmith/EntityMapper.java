@@ -14,7 +14,6 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @Component
@@ -58,7 +57,7 @@ public class EntityMapper {
             StringBuilder where = new StringBuilder();
             for (String col : pkCols) {
                 if (where.length() > 0) {
-                    where.append(" ");
+                    where.append(" and ");
                 }
                 Object value = wrappedSource.getPropertyValue(source.camelColumnFromSnake(col));
                 boolean wrap = wrapColumnData(value);
@@ -167,9 +166,6 @@ public class EntityMapper {
         BeanWrapper wrappedTargetwrappedSource = new BeanWrapperImpl(source);
         Set<Descriptors.FieldDescriptor> keys = source.getAllFields().keySet();
         for (Descriptors.FieldDescriptor fd : keys) {
-            if (fd.getName().equals("kvp") || fd.getName().equals("child")) {
-                continue;
-            }
             String name = translatePropertyName(fd.getName());
             setTargetProperty(wrappedTarget, name, source.getField(fd));
         }
@@ -221,15 +217,11 @@ public class EntityMapper {
         }
     }
 
+    @SneakyThrows
     public static Message pojoToProto(Object source, Class clazz) throws NoSuchMethodException, ClassNotFoundException {
         GeneratedMessageV3.Builder<?> builder = null;
-        try {
-            builder = (GeneratedMessageV3.Builder<?>) clazz.getDeclaredMethod("newBuilder").invoke(null);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+        builder = (GeneratedMessageV3.Builder<?>) clazz.getDeclaredMethod("newBuilder").invoke(null);
+
         Descriptors.FieldDescriptor kvpFd = builder.getDescriptorForType().findFieldByName("kvp");
 
         final BeanWrapper wrappedSource = new BeanWrapperImpl(source);
@@ -286,7 +278,7 @@ public class EntityMapper {
                 dvBuilder.setStringValue((String) propertyValue);
                 break;
         }
-        Hello.DataValue dv =  dvBuilder.build();
+        Hello.DataValue dv = dvBuilder.build();
         return dv;
     }
 

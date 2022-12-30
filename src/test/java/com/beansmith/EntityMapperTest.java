@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class EntityMapperTest {
 
@@ -16,10 +17,10 @@ class EntityMapperTest {
     @Test
     void updateQueriesForEntityBase() {
         TestEntity te = getTestEntity1();
-        Map<String,String> expected = new HashMap<>();
-        expected.put("entity_test",getUpdateQuery());
+        Map<String, String> expected = new HashMap<>();
+        expected.put("entity_test", getUpdateQuery());
 
-        Map<String,String> actual = EntityMapper.updateQueriesForEntityBase(te);
+        Map<String, String> actual = EntityMapper.updateQueriesForEntityBase(te);
 
         assertThat(actual.equals(expected));
 
@@ -40,10 +41,10 @@ class EntityMapperTest {
     @Test
     void insertQueriesForEntityBase() {
         TestEntity te = getTestEntity1();
-        Map<String,String> expected = new HashMap<>();
-        expected.put("entity_test",getInsertQuery());
+        Map<String, String> expected = new HashMap<>();
+        expected.put("entity_test", getInsertQuery());
 
-        Map<String,String> actual = EntityMapper.insertQueriesForEntityBase(te);
+        Map<String, String> actual = EntityMapper.insertQueriesForEntityBase(te);
 
         assertThat(actual.equals(expected));
     }
@@ -56,6 +57,27 @@ class EntityMapperTest {
         EntityBase actual = EntityMapper.protoToEntityBase(ms, TestEntity.class);
 
         assertThat(actual.equals(expected));
+    }
+
+
+    @Test
+    void entityBaseListFromQueryResult_throws_for_non_EntityBase() {
+        Hello.TestEntity ms = getProto1();
+
+        assertThatThrownBy(() -> {
+            EntityMapper.entityBaseListFromQueryResult(Object.class, getDbRows());
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("must extend EdmEntityBase");
+    }
+
+    @Test
+    void proto_to_entity_basethrows_for_non_EntityBase() {
+        Hello.TestEntity ms = getProto1();
+
+        assertThatThrownBy(() -> {
+            EntityMapper.protoToEntityBase(ms, Object.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("must extend EdmEntityBase");
     }
 
     @Test
