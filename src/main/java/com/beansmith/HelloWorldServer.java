@@ -173,7 +173,7 @@ public class HelloWorldServer {
                 rows.add(row);
                 rows.add(row2);
 
-                Message result = EntityMapper.pojoToProto(mp, Hello.MapperSample.class);
+                Message result = EntityMapper.pojoToProto(mp, Hello.TestEntity.class);
                 TestEntity mp2 = (TestEntity) EntityMapper.protoToEntityBase(result, TestEntity.class);
 
                 Map<String, String> queries = EntityMapper.insertQueriesForEntityBase(mp);
@@ -239,13 +239,13 @@ public class HelloWorldServer {
         }
 
         @Override
-        public void sendMapperSample(Hello.MapperSample request,
-                                     StreamObserver<Hello.MapperSample> responseObserver) {
+        public void sendTestEntity(Hello.TestEntity request,
+                                     StreamObserver<Hello.TestEntity> responseObserver) {
 
 //            MapperPojo pojo = MapperPojo.builder()
 //                    .doubleVal(new Double(123)).iWasHere("Exisitng var").longVal(12345l).build();
 //
-//            Mapper.pojoToProto(pojo, Hello.MapperSample.class);
+//            Mapper.pojoToProto(pojo, Hello.TestEntity.class);
 //            GeneratedMessageV3.Builder<?> builder = Hello.EntityData.class.getDeclaredMethod("newBuilder").invoke(null);
 //            Descriptors.FieldDescriptor fd = builder.getDescriptorForType().findFieldByName("name");
 //            builder.setField(fd, "junk");

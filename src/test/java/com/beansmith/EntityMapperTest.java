@@ -1,5 +1,6 @@
 package com.beansmith;
 
+import com.google.protobuf.Message;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -7,40 +8,108 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class EntityMapperTest {
 
-    @Test
-    void camelToSnake() {
-    }
 
     @Test
     void updateQueriesForEntityBase() {
+        TestEntity te = getTestEntity1();
+        Map<String,String> expected = new HashMap<>();
+        expected.put("entity_test",getUpdateQuery());
+
+        Map<String,String> actual = EntityMapper.updateQueriesForEntityBase(te);
+
+        assertThat(actual.equals(expected));
+
     }
 
     @Test
     void entityBaseListFromQueryResult() {
+        List<Map<String, Object>> rows = getDbRows();
+        List<TestEntity> expected = new ArrayList<>();
+        expected.add(getTestEntity1());
+        expected.add(getTestEntity2());
+
+        List<EntityBase> actual = EntityMapper.entityBaseListFromQueryResult(TestEntity.class, rows);
+
+        assertThat(actual.equals(expected));
     }
 
     @Test
     void insertQueriesForEntityBase() {
+        TestEntity te = getTestEntity1();
+        Map<String,String> expected = new HashMap<>();
+        expected.put("entity_test",getInsertQuery());
+
+        Map<String,String> actual = EntityMapper.insertQueriesForEntityBase(te);
+
+        assertThat(actual.equals(expected));
     }
 
     @Test
     void protoToEntityBase() {
+        Hello.TestEntity ms = getProto1();
+        TestEntity expected = getTestEntity1();
+
+        EntityBase actual = EntityMapper.protoToEntityBase(ms, TestEntity.class);
+
+        assertThat(actual.equals(expected));
     }
 
     @Test
-    void pojoToProto() {
+    void pojoToProto() throws ClassNotFoundException, NoSuchMethodException {
+        Hello.TestEntity expected = getProto1();
+        TestEntity te = getTestEntity1();
+
+        Message actual = EntityMapper.pojoToProto(te, Hello.TestEntity.class);
+
+        assertThat(actual.equals(expected));
     }
 
 
-    private Hello.MapperSample getProto1() {
-        return null;
+    private Hello.TestEntity getProto1() {
+        Hello.TestEntity.Builder builder = Hello.TestEntity.newBuilder();
+        List<Hello.KevValuePair> kvps = new ArrayList<>();
+        kvps.add(Hello.KevValuePair.newBuilder()
+                .setKey("boolVal")
+                .setValue(Hello.DataValue.newBuilder()
+                        .setBoolValue(true)).build());
+        kvps.add(Hello.KevValuePair.newBuilder()
+                .setKey("doubleVal")
+                .setValue(Hello.DataValue.newBuilder()
+                        .setDoubleValue(12.2323)).build());
+        kvps.add(Hello.KevValuePair.newBuilder()
+                .setKey("floatVal")
+                .setValue(Hello.DataValue.newBuilder()
+                        .setFloatValue(12.123f)).build());
+        kvps.add(Hello.KevValuePair.newBuilder()
+                .setKey("intVal")
+                .setValue(Hello.DataValue.newBuilder()
+                        .setIntValue(12)).build());
+        kvps.add(Hello.KevValuePair.newBuilder()
+                .setKey("longVal")
+                .setValue(Hello.DataValue.newBuilder()
+                        .setLongValue(12L)).build());
+        kvps.add(Hello.KevValuePair.newBuilder()
+                .setKey("name")
+                .setValue(Hello.DataValue.newBuilder()
+                        .setStringValue("entity_test")).build());
+        kvps.add(Hello.KevValuePair.newBuilder()
+                .setKey("stringVal")
+                .setValue(Hello.DataValue.newBuilder()
+                        .setStringValue("this is a string")).build());
+
+        builder.setPrimaryKey(12L)
+                .setThisWasHere("existing value")
+                .setSoWasI(1234L)
+                .setTableName("entity_test").build();
+        builder.addAllKvp(kvps);
+        return builder.build();
     }
-    private TestEntity getTestEntity1()
-    {
+
+    private TestEntity getTestEntity1() {
         TestEntity mp = new TestEntity();
         mp.setBoolVal(true);
         mp.setPrimaryKey(12L);
@@ -54,8 +123,8 @@ class EntityMapperTest {
 
         return mp;
     }
-    private TestEntity getTestEntity2()
-    {
+
+    private TestEntity getTestEntity2() {
         TestEntity mp = new TestEntity();
         mp.setBoolVal(false);
         mp.setPrimaryKey(14L);
@@ -69,8 +138,7 @@ class EntityMapperTest {
         return mp;
     }
 
-    private List<Map<String,Object>> getDbRows()
-    {
+    private List<Map<String, Object>> getDbRows() {
         List<Map<String, Object>> rows = new ArrayList<>();
         Map<String, Object> row = new HashMap<>();
         row.put("primary_key", 12L);
@@ -96,5 +164,17 @@ class EntityMapperTest {
         rows.add(row2);
 
         return rows;
+    }
+
+    private String getInsertQuery() {
+        return "insert into entity_test (bool_val, float_val, int_val, double_val, long_val, " +
+                "string_val, bytes_val, this_was_here, so_was_i, primary_key) values (cast( 1  as BIT ) " +
+                ", 12.123, 12, 12.2323, 12, 'this is a string', NULL, 'existing value', 1234, 12)";
+    }
+
+    private String getUpdateQuery() {
+        return "update entity_test set bool_val = cast( 1  as BIT ) , float_val = 12.123, int_val = 12," +
+                " double_val = 12.2323, long_val = 12, string_val = 'this is a string', bytes_val = NULL," +
+                " this_was_here = 'existing value', so_was_i = 1234 where primary_key = 12";
     }
 }

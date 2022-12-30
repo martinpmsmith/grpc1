@@ -16,7 +16,10 @@ public abstract class EntityBase {
     protected String name;
     private final List<String> oneToManyTables = new ArrayList<>();
     private final Map<String, List<String>> tableColumnMap = new HashMap<>();
-
+    /*
+    look into need to handle new roperties dynamically.
+    private final Map<String, Object> addedProperties = new HashMap<>();
+*/
     private final Map<String, List<String>> tablePrimryKeyColumnMap = new HashMap<>();
 
     private static final Map<String, String> columnsCamelToSnakeMap = new HashMap<>();

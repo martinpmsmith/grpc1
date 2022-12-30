@@ -247,44 +247,47 @@ public class EntityMapper {
                 } else {
                     Descriptors.FieldDescriptor keyFd = kvpBuilder.getDescriptorForType().findFieldByName("key");
                     Descriptors.FieldDescriptor valueFd = kvpBuilder.getDescriptorForType().findFieldByName("value");
-                    Hello.DataValue.Builder dvBuilder = Hello.DataValue.newBuilder();
                     String classname = Class.forName(pd.getPropertyType().getName()).getSimpleName();
-                    switch (classname) {
-                        case "Boolean":
-                            dvBuilder.setBoolValue((Boolean) wrappedSource.getPropertyValue(propertyName));
-                            break;
-                        case "Integer":
-                            dvBuilder.setIntValue((Integer) wrappedSource.getPropertyValue(propertyName));
-                            break;
-                        case "Long":
-                            dvBuilder.setLongValue((Long) wrappedSource.getPropertyValue(propertyName));
-                            break;
-                        case "Double":
-                            dvBuilder.setDoubleValue((Double) wrappedSource.getPropertyValue(propertyName));
-                            break;
-                        case "Float":
-                            dvBuilder.setFloatValue((Float) wrappedSource.getPropertyValue(propertyName));
-                            break;
-                        case "ByteString":
-                            dvBuilder.setBytesValue((ByteString) wrappedSource.getPropertyValue(propertyName));
-                            break;
-                        case "String":
-                            dvBuilder.setStringValue((String) wrappedSource.getPropertyValue(propertyName));
-                            break;
-                        default:
-                            dvBuilder.setStringValue(Objects.requireNonNull(wrappedSource
-                                    .getPropertyTypeDescriptor(propertyName)).toString());
-                            break;
-
+                    Object propertyValue = wrappedSource.getPropertyValue(propertyName);
+                    if (propertyValue != null) {
+                        kvpBuilder.setField(valueFd, buildDataValue(classname, propertyValue));
+                        kvpBuilder.setField(keyFd, propertyName);
+                        builder.addRepeatedField(kvpFd, kvpBuilder.build());
                     }
-                    kvpBuilder.setField(valueFd, dvBuilder.build());
-                    kvpBuilder.setField(keyFd, propertyName);
-                    builder.addRepeatedField(kvpFd, kvpBuilder.build());
-
                 }
             }
         }
         return builder.build();
+    }
+
+    @NotNull
+    private static Hello.DataValue buildDataValue(String classname, Object propertyValue) {
+        Hello.DataValue.Builder dvBuilder = Hello.DataValue.newBuilder();
+        switch (classname) {
+            case "Boolean":
+                dvBuilder.setBoolValue((Boolean) propertyValue);
+                break;
+            case "Integer":
+                dvBuilder.setIntValue((Integer) propertyValue);
+                break;
+            case "Long":
+                dvBuilder.setLongValue((Long) propertyValue);
+                break;
+            case "Double":
+                dvBuilder.setDoubleValue((Double) propertyValue);
+                break;
+            case "Float":
+                dvBuilder.setFloatValue((Float) propertyValue);
+                break;
+            case "ByteString":
+                dvBuilder.setBytesValue((ByteString) propertyValue);
+                break;
+            case "String":
+                dvBuilder.setStringValue((String) propertyValue);
+                break;
+        }
+        Hello.DataValue dv =  dvBuilder.build();
+        return dv;
     }
 
     private static Descriptors.FieldDescriptor getFieldDescriptor(GeneratedMessageV3.Builder<?> builder, String propertyName) {
