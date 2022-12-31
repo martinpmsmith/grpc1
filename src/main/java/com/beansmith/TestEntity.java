@@ -4,6 +4,8 @@ package com.beansmith;
 import com.google.protobuf.ByteString;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @ToString
@@ -19,7 +21,7 @@ public class TestEntity extends EntityBase {
     private ByteString bytesVal;
     private String thisWasHere;
     private Long soWasI;
-
+//    private Timestamp timestamp;
     @Override
     public synchronized void setTableColumnMap() {
         if (this.name == null) {

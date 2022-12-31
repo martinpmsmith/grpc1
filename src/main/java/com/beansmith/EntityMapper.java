@@ -173,9 +173,9 @@ public class EntityMapper {
         int kvpFields = source.getRepeatedFieldCount(kvpFd);
 
         for (int i = 0; i < kvpFields; i++) {
-            Hello.KevValuePair kvp = (Hello.KevValuePair) source.getRepeatedField(kvpFd, i);
-            Hello.DataValue dv = kvp.getValue();
-            Hello.DataValue.ValueCase vc = dv.getValueCase();
+            Entity.KevValuePair kvp = (Entity.KevValuePair) source.getRepeatedField(kvpFd, i);
+            Entity.DataValue dv = kvp.getValue();
+            Entity.DataValue.ValueCase vc = dv.getValueCase();
             switch (vc) {
                 case INT_VALUE:
                     setTargetProperty(wrappedTarget, kvp.getKey(), dv.getIntValue());
@@ -230,7 +230,7 @@ public class EntityMapper {
             String propertyName = pd.getName();
             TypeDescriptor type = wrappedSource.getPropertyTypeDescriptor(propertyName);
             Descriptors.FieldDescriptor nameFd = getFieldDescriptor(builder, propertyName);
-            Hello.KevValuePair.Builder kvpBuilder = Hello.KevValuePair.newBuilder();
+            Entity.KevValuePair.Builder kvpBuilder = Entity.KevValuePair.newBuilder();
             Object value = wrappedSource.getPropertyValue(propertyName);
             // only send properties that have values and are writeable.
             if (value != null && wrappedSource.isWritableProperty(propertyName)) {
@@ -253,8 +253,8 @@ public class EntityMapper {
     }
 
     @NotNull
-    private static Hello.DataValue buildDataValue(String classname, Object propertyValue) {
-        Hello.DataValue.Builder dvBuilder = Hello.DataValue.newBuilder();
+    private static Entity.DataValue buildDataValue(String classname, Object propertyValue) {
+        Entity.DataValue.Builder dvBuilder = Entity.DataValue.newBuilder();
         switch (classname) {
             case "Boolean":
                 dvBuilder.setBoolValue((Boolean) propertyValue);
@@ -278,7 +278,7 @@ public class EntityMapper {
                 dvBuilder.setStringValue((String) propertyValue);
                 break;
         }
-        Hello.DataValue dv = dvBuilder.build();
+        Entity.DataValue dv = dvBuilder.build();
         return dv;
     }
 

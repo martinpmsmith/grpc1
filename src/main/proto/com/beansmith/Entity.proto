@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package com.beansmith;
+
+message KevValuePair {
+  string key = 1;
+  DataValue value = 2;
+}
+
+message DataValue {
+  oneof value {
+    bool  bool_value = 1;
+    float float_value = 2;
+    int32 int_value = 3;
+    double  double_value = 4;
+    int64 long_value = 5;
+    bytes bytes_value = 6;
+    string string_value = 7;
+  }
+}
+
+message EntityData {
+  string name = 1;
+  repeated KevValuePair kvp = 2;
+  repeated EntityData child = 3;
+}
+
+//message TestEntity {
+//  string tableName = 1;
+//  int64 primaryKey = 5;
+//  string this_was_here = 2;
+//  int64 so_was_i = 3;
+//  repeated KevValuePair kvp = 4;
+//}

@@ -51,7 +51,7 @@ class EntityMapperTest {
 
     @Test
     void protoToEntityBase() {
-        Hello.TestEntity ms = getProto1();
+        Domain.TestEntity ms = getProto1();
         TestEntity expected = getTestEntity1();
 
         EntityBase actual = EntityMapper.protoToEntityBase(ms, TestEntity.class);
@@ -62,7 +62,7 @@ class EntityMapperTest {
 
     @Test
     void entityBaseListFromQueryResult_throws_for_non_EntityBase() {
-        Hello.TestEntity ms = getProto1();
+        Domain.TestEntity ms = getProto1();
 
         assertThatThrownBy(() -> {
             EntityMapper.entityBaseListFromQueryResult(Object.class, getDbRows());
@@ -72,7 +72,7 @@ class EntityMapperTest {
 
     @Test
     void proto_to_entity_basethrows_for_non_EntityBase() {
-        Hello.TestEntity ms = getProto1();
+        Domain.TestEntity ms = getProto1();
 
         assertThatThrownBy(() -> {
             EntityMapper.protoToEntityBase(ms, Object.class);
@@ -82,45 +82,45 @@ class EntityMapperTest {
 
     @Test
     void pojoToProto() throws ClassNotFoundException, NoSuchMethodException {
-        Hello.TestEntity expected = getProto1();
+        Domain.TestEntity expected = getProto1();
         TestEntity te = getTestEntity1();
 
-        Message actual = EntityMapper.pojoToProto(te, Hello.TestEntity.class);
+        Message actual = EntityMapper.pojoToProto(te, Domain.TestEntity.class);
 
         assertThat(actual.equals(expected));
     }
 
 
-    private Hello.TestEntity getProto1() {
-        Hello.TestEntity.Builder builder = Hello.TestEntity.newBuilder();
-        List<Hello.KevValuePair> kvps = new ArrayList<>();
-        kvps.add(Hello.KevValuePair.newBuilder()
+    private Domain.TestEntity getProto1() {
+        Domain.TestEntity.Builder builder = Domain.TestEntity.newBuilder();
+        List<Entity.KevValuePair> kvps = new ArrayList<>();
+        kvps.add(Entity.KevValuePair.newBuilder()
                 .setKey("boolVal")
-                .setValue(Hello.DataValue.newBuilder()
+                .setValue(Entity.DataValue.newBuilder()
                         .setBoolValue(true)).build());
-        kvps.add(Hello.KevValuePair.newBuilder()
+        kvps.add(Entity.KevValuePair.newBuilder()
                 .setKey("doubleVal")
-                .setValue(Hello.DataValue.newBuilder()
+                .setValue(Entity.DataValue.newBuilder()
                         .setDoubleValue(12.2323)).build());
-        kvps.add(Hello.KevValuePair.newBuilder()
+        kvps.add(Entity.KevValuePair.newBuilder()
                 .setKey("floatVal")
-                .setValue(Hello.DataValue.newBuilder()
+                .setValue(Entity.DataValue.newBuilder()
                         .setFloatValue(12.123f)).build());
-        kvps.add(Hello.KevValuePair.newBuilder()
+        kvps.add(Entity.KevValuePair.newBuilder()
                 .setKey("intVal")
-                .setValue(Hello.DataValue.newBuilder()
+                .setValue(Entity.DataValue.newBuilder()
                         .setIntValue(12)).build());
-        kvps.add(Hello.KevValuePair.newBuilder()
+        kvps.add(Entity.KevValuePair.newBuilder()
                 .setKey("longVal")
-                .setValue(Hello.DataValue.newBuilder()
+                .setValue(Entity.DataValue.newBuilder()
                         .setLongValue(12L)).build());
-        kvps.add(Hello.KevValuePair.newBuilder()
+        kvps.add(Entity.KevValuePair.newBuilder()
                 .setKey("name")
-                .setValue(Hello.DataValue.newBuilder()
+                .setValue(Entity.DataValue.newBuilder()
                         .setStringValue("entity_test")).build());
-        kvps.add(Hello.KevValuePair.newBuilder()
+        kvps.add(Entity.KevValuePair.newBuilder()
                 .setKey("stringVal")
-                .setValue(Hello.DataValue.newBuilder()
+                .setValue(Entity.DataValue.newBuilder()
                         .setStringValue("this is a string")).build());
 
         builder.setPrimaryKey(12L)

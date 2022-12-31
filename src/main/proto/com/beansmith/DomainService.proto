@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package com.beansmith;
+
+import "com/beansmith/Entity.proto";
+import "com/beansmith/Domain.proto";
+// The greeting service definition.
+service DomainService {
+  // Sends a greeting
+  rpc sendEntityData (EntityData) returns (EntityData) {}
+  rpc sendTestEntity (TestEntity) returns (TestEntity) {}
+}
