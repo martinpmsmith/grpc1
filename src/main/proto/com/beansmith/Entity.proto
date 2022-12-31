@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+
 package com.beansmith;
 
 message KevValuePair {
@@ -24,11 +25,3 @@ message EntityData {
   repeated KevValuePair kvp = 2;
   repeated EntityData child = 3;
 }
-
-//message TestEntity {
-//  string tableName = 1;
-//  int64 primaryKey = 5;
-//  string this_was_here = 2;
-//  int64 so_was_i = 3;
-//  repeated KevValuePair kvp = 4;
-//}
