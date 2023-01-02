@@ -9,4 +9,7 @@ service DomainService {
   // Sends a greeting
   rpc sendEntityData (EntityData) returns (EntityData) {}
   rpc sendTestEntity (TestEntity) returns (TestEntity) {}
+  rpc fetchByPrimaryKey (TestPrimaryKey) returns (TestEntity) {}
+  rpc fetchByPrimaryKeys (TestPrimaryKeys) returns (TestEntities) {}
 }
+

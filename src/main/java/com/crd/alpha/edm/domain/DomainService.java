@@ -39,16 +39,45 @@ import java.util.logging.Logger;
  */
 public class DomainService {
     private static final Logger logger = Logger.getLogger(DomainService.class.getName());
-
+    static Map<Long, TestEntity> cache = new HashMap<>();
     private Server server;
 
     /**
      * Main launches the server from the command line.
      */
     public static void main(String[] args) throws IOException, InterruptedException {
+        buildCache();
         final DomainService server = new DomainService();
         server.start();
         server.blockUntilShutdown();
+    }
+
+    private static void buildCache() {
+        TestEntity mp = new TestEntity();
+        mp.setBoolVal(true);
+        mp.setPrimaryKey(1L);
+        mp.setDoubleVal(12.2323);
+        mp.setFloatVal(12.123f);
+        mp.setIntVal(12);
+        mp.setThisWasHere("existing value");
+        mp.setLongVal(12L);
+        mp.setSoWasI(1234L);
+        mp.setStringVal("this is a string");
+
+        TestEntity mp2 = new TestEntity();
+        mp2.setBoolVal(true);
+        mp2.setPrimaryKey(2L);
+        mp2.setDoubleVal(2212.2323);
+        mp2.setFloatVal(2212112.123f);
+        mp2.setIntVal(12123);
+        mp2.setThisWasHere("ev2");
+        mp2.setStringVal("this is a string too");
+
+        cache.putIfAbsent(mp.getPrimaryKey(), mp);
+        cache.putIfAbsent(mp2.getPrimaryKey(), mp2);
+        cache.putIfAbsent(3L, mp2);
+        cache.putIfAbsent(20L, mp2);
+        cache.putIfAbsent(100L, mp2);
     }
 
     private static void processEntityData(Entity.EntityData entityData) {
@@ -213,6 +242,56 @@ public class DomainService {
                 responseObserver.onError(StatusProto.toStatusRuntimeException(status));
             }
 
+        }
+
+        @Override
+        public void fetchByPrimaryKey(Domain.TestPrimaryKey request,
+                                      StreamObserver<Domain.TestEntity> responseObserver) {
+            try {
+                Domain.TestEntity result = null;
+                TestEntity te = cache.get(request.getPrimaryKey());
+                if (te == null) {
+                    throw new IllegalArgumentException("Primary key " + request.getPrimaryKey() + " does not exists ");
+                }
+                result = (Domain.TestEntity) EntityMapper.pojoToProto(te, Domain.TestEntity.class);
+
+                responseObserver.onNext(result);
+                responseObserver.onCompleted();
+            } catch (Exception e) {
+                Status status = Status.newBuilder()
+                        .setCode(Code.INTERNAL.getNumber())
+                        .setMessage("\n" + e.getMessage() + "\n----- request -----\n" + request.toString() + "-------------------\n")
+                        .addDetails(Any.pack(request))
+                        .build();
+                responseObserver.onError(StatusProto.toStatusRuntimeException(status));
+            }
+        }
+
+        @Override
+        public void fetchByPrimaryKeys(Domain.TestPrimaryKeys request,
+                                       StreamObserver<Domain.TestEntities> responseObserver) {
+            try {
+                List<Domain.TestEntity> result = null;
+                List<Long> pks = request.getPrimaryKeyList();
+                Domain.TestEntities.Builder builder = Domain.TestEntities.newBuilder();
+
+                for (Long pk : pks) {
+                    TestEntity te = cache.get(pk);
+                    if (te != null) {
+                        Domain.TestEntity dte = (Domain.TestEntity) EntityMapper.pojoToProto(te, Domain.TestEntity.class);
+                        builder.addTestEntities(dte);
+                    }
+                }
+                responseObserver.onNext(builder.build());
+                responseObserver.onCompleted();
+            } catch (Exception e) {
+                Status status = Status.newBuilder()
+                        .setCode(Code.INTERNAL.getNumber())
+                        .setMessage("\n" + e.getMessage() + "\n----- request -----\n" + request.toString() + "-------------------\n")
+                        .addDetails(Any.pack(request))
+                        .build();
+                responseObserver.onError(StatusProto.toStatusRuntimeException(status));
+            }
         }
     }
 }

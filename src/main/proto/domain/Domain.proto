@@ -11,3 +11,15 @@ message TestEntity {
   int64 so_was_i = 3;
   repeated KevValuePair kvp = 4;
 }
+
+message TestEntities {
+  repeated TestEntity testEntities  = 1;
+}
+
+message TestPrimaryKey{
+  int64 primaryKey = 5;
+}
+
+message TestPrimaryKeys{
+  repeated int64 primaryKey = 5;
+}
