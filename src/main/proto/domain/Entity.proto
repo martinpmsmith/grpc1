@@ -1,7 +1,6 @@
 syntax = "proto3";
 
-
-package com.beansmith;
+package com.crd.alpha.edm.domain;
 
 message KevValuePair {
   string key = 1;

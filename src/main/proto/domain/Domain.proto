@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-import "com/beansmith/Entity.proto";
-package com.beansmith;
+import "domain/Entity.proto";
+package com.crd.alpha.edm.domain;
 
 
 message TestEntity {

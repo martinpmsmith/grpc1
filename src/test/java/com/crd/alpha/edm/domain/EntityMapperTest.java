@@ -1,4 +1,4 @@
-package com.beansmith;
+package com.crd.alpha.edm.domain;
 
 import com.google.protobuf.Message;
 import org.junit.jupiter.api.Test;

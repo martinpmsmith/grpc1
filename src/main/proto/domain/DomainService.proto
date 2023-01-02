@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package com.beansmith;
+package com.crd.alpha.edm.domain;
 
-import "com/beansmith/Entity.proto";
-import "com/beansmith/Domain.proto";
+import "domain/Entity.proto";
+import "domain/Domain.proto";
 // The greeting service definition.
 service DomainService {
   // Sends a greeting

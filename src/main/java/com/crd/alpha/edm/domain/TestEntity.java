@@ -1,10 +1,8 @@
-package com.beansmith;
+package com.crd.alpha.edm.domain;
 
 
 import com.google.protobuf.ByteString;
 import lombok.*;
-
-import java.sql.Timestamp;
 
 @Getter
 @Setter

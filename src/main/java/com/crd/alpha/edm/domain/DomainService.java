@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.beansmith;
+package com.crd.alpha.edm.domain;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
-import io.grpc.Context;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptors;
@@ -35,8 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-
-import static com.beansmith.GrpcServerRequestInterceptor.*;
 
 /**
  * Server that manages startup/shutdo[wn of a {@code Greeter} server.
@@ -143,7 +140,7 @@ public class DomainService {
 
         @Override
         public void sendTestEntity(Domain.TestEntity request,
-                                     StreamObserver<Domain.TestEntity> responseObserver) {
+                                   StreamObserver<Domain.TestEntity> responseObserver) {
             TestEntity mp = new TestEntity();
             mp.setBoolVal(true);
             mp.setPrimaryKey(12L);
@@ -181,7 +178,7 @@ public class DomainService {
 
             Message result = null;
             try {
-                result = EntityMapper.pojoToProto(mp, TestEntity.class);
+                result = EntityMapper.pojoToProto(mp, Domain.TestEntity.class);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             } catch (ClassNotFoundException e) {
