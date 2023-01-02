@@ -18,7 +18,6 @@ package com.crd.alpha.edm.domain;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
-import com.google.protobuf.Message;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import io.grpc.Server;
@@ -141,68 +140,79 @@ public class DomainService {
         @Override
         public void sendTestEntity(Domain.TestEntity request,
                                    StreamObserver<Domain.TestEntity> responseObserver) {
-            TestEntity mp = new TestEntity();
-            mp.setBoolVal(true);
-            mp.setPrimaryKey(12L);
-            mp.setDoubleVal(12.2323);
-            mp.setFloatVal(12.123f);
-            mp.setIntVal(12);
-            mp.setThisWasHere("existing value");
-            mp.setLongVal(12L);
-            mp.setSoWasI(1234L);
-            mp.setStringVal("this is a string");
 
-            List<Map<String, Object>> rows = new ArrayList();
-            Map<String, Object> row = new HashMap<>();
-            row.put("primary_key", 12L);
-            row.put("bool_val", true);
-            row.put("double_val", 12.2323);
-            row.put("float_val", 12.123f);
-            row.put("int_val", 12);
-            row.put("this_was_here", "existing value");
-            row.put("so_was_i", 1234L);
-            row.put("long_val", 12L);
-            row.put("string_val", "this is a string");
-            Map<String, Object> row2 = new HashMap<>();
-            row2.put("primary_key", 14L);
-            row2.put("bool_val", false);
-            row2.put("double_val", null);
-            row2.put("float_val", 213.123f);
-            row2.put("int_val", 12333);
-            row2.put("this_was_here", null);
-            row2.put("so_was_i", 1234L);
-            row2.put("long_val", 12L);
-            row2.put("string_val", "");
-            rows.add(row);
-            rows.add(row2);
-
-            Message result = null;
             try {
-                result = EntityMapper.pojoToProto(mp, Domain.TestEntity.class);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+
+                TestEntity mp = new TestEntity();
+                mp.setBoolVal(true);
+                mp.setPrimaryKey(12L);
+                mp.setDoubleVal(12.2323);
+                mp.setFloatVal(12.123f);
+                mp.setIntVal(12);
+                mp.setThisWasHere("existing value");
+                mp.setLongVal(12L);
+                mp.setSoWasI(1234L);
+                mp.setStringVal("this is a string");
+
+                List<Map<String, Object>> rows = new ArrayList();
+                Map<String, Object> row = new HashMap<>();
+                row.put("primary_key", 12L);
+                row.put("bool_val", true);
+                row.put("double_val", 12.2323);
+                row.put("float_val", 12.123f);
+                row.put("int_val", 12);
+                row.put("this_was_here", "existing value");
+                row.put("so_was_i", 1234L);
+                row.put("long_val", 12L);
+                row.put("string_val", "this is a string");
+                Map<String, Object> row2 = new HashMap<>();
+                row2.put("primary_key", 14L);
+                row2.put("bool_val", false);
+                row2.put("double_val", null);
+                row2.put("float_val", 213.123f);
+                row2.put("int_val", 12333);
+                row2.put("this_was_here", null);
+                row2.put("so_was_i", 1234L);
+                row2.put("long_val", 12L);
+                row2.put("string_val", "");
+                rows.add(row);
+                rows.add(row2);
+
+                Domain.TestEntity result = null;
+                try {
+                    result = (Domain.TestEntity) EntityMapper.pojoToProto(mp, Domain.TestEntity.class);
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                TestEntity mp2 = (TestEntity) EntityMapper.protoToEntityBase(result, TestEntity.class);
+
+                Map<String, String> queries = EntityMapper.insertQueriesForEntityBase(mp);
+                Map<String, String> queries2 = EntityMapper.updateQueriesForEntityBase(mp);
+                List<EntityBase> data = EntityMapper.entityBaseListFromQueryResult(TestEntity.class, rows);
+
+                logger.info("\n\n" + result.toString());
+                logger.info("\n\n" + mp2.toString());
+                logger.info("\n\n" + queries.get("entity_test").toString());
+                logger.info("\n\n" + queries2.get("entity_test").toString());
+
+                int rowNo = 1;
+                for (EntityBase ent : data) {
+                    logger.info("\n\n----- row# " + rowNo + "\n" + ent.toString());
+                    rowNo++;
+                }
+                responseObserver.onNext(result);
+                responseObserver.onCompleted();
+            } catch (Exception e) {
+                Status status = Status.newBuilder()
+                        .setCode(Code.INTERNAL.getNumber())
+                        .setMessage("\n" + e.getMessage() + "\n----- request -----\n" + request.toString() + "-------------------\n")
+                        .addDetails(Any.pack(request))
+                        .build();
+                responseObserver.onError(StatusProto.toStatusRuntimeException(status));
             }
-            TestEntity mp2 = (TestEntity) EntityMapper.protoToEntityBase(result, TestEntity.class);
 
-            Map<String, String> queries = EntityMapper.insertQueriesForEntityBase(mp);
-            Map<String, String> queries2 = EntityMapper.updateQueriesForEntityBase(mp);
-            List<EntityBase> data = EntityMapper.entityBaseListFromQueryResult(TestEntity.class, rows);
-
-            logger.info("\n\n" + result.toString());
-            logger.info("\n\n" + mp2.toString());
-            logger.info("\n\n" + queries.get("entity_test").toString());
-            logger.info("\n\n" + queries2.get("entity_test").toString());
-
-            int rowNo = 1;
-            for (EntityBase ent : data) {
-                logger.info("\n\n----- row# " + rowNo + "\n" + ent.toString());
-                rowNo++;
-            }
-
-
-            int x = 1;
         }
     }
 }

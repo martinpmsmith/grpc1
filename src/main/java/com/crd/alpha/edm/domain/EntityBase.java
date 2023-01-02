@@ -30,6 +30,7 @@ public abstract class EntityBase {
     }
 
     public void setName(String name){
+        this.name = name;
         setTableColumnMap();
     }
     protected abstract void setTableColumnMap();

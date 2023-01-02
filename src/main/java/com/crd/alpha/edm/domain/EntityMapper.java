@@ -33,7 +33,6 @@ public class EntityMapper {
     public static Map<String, String> updateQueriesForEntityBase(EntityBase source) {
         Map<String, String> retval = new HashMap<>();
         BeanWrapper wrappedSource = new BeanWrapperImpl(source);
-        PropertyDescriptor[] pds = wrappedSource.getPropertyDescriptors();
         for (String table : source.getTableColumnMap().keySet()) {
             List<String> pkCols = source.getKeyColumns(table);
             List<String> columns = source.getTableColumnMap().get(table);
@@ -73,7 +72,7 @@ public class EntityMapper {
         return retval;
     }
 
-    public static List<EntityBase> entityBaseListFromQueryResult(Class clazz, List<Map<String, Object>> rows) {
+    public static List<EntityBase> entityBaseListFromQueryResult(Class<?> clazz, List<Map<String, Object>> rows) {
         if (!EntityBase.class.isAssignableFrom(clazz)) {
             throw new IllegalArgumentException("Class " + clazz.getName() + "must extend EdmEntityBase");
         }
