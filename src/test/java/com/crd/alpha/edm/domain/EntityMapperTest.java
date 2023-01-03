@@ -126,7 +126,7 @@ class EntityMapperTest {
         builder.setPrimaryKey(12L)
                 .setThisWasHere("existing value")
                 .setSoWasI(1234L)
-                .setTableName("entity_test").build();
+                .setName("entity_test").build();
         builder.addAllKvp(kvps);
         return builder.build();
     }

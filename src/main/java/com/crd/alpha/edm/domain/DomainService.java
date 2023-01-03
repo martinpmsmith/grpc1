@@ -279,7 +279,7 @@ public class DomainService {
                     TestEntity te = cache.get(pk);
                     if (te != null) {
                         Domain.TestEntity dte = (Domain.TestEntity) EntityMapper.pojoToProto(te, Domain.TestEntity.class);
-                        builder.addTestEntities(dte);
+                        builder.addTestEntity(dte);
                     }
                 }
                 responseObserver.onNext(builder.build());

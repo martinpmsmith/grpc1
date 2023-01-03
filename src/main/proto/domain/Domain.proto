@@ -5,21 +5,21 @@ package com.crd.alpha.edm.domain;
 
 
 message TestEntity {
-  string tableName = 1;
-  int64 primaryKey = 5;
-  string this_was_here = 2;
-  int64 so_was_i = 3;
-  repeated KevValuePair kvp = 4;
+  string name = 1;
+  int64 primaryKey = 2;
+  string this_was_here = 3;
+  int64 so_was_i = 4;
+  repeated KevValuePair kvp = 5;
 }
 
 message TestEntities {
-  repeated TestEntity testEntities  = 1;
+  repeated TestEntity testEntity  = 1;
 }
 
 message TestPrimaryKey{
-  int64 primaryKey = 5;
+  int64 primaryKey = 1;
 }
 
 message TestPrimaryKeys{
-  repeated int64 primaryKey = 5;
+  repeated int64 primaryKey = 1;
 }

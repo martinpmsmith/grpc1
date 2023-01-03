@@ -1,0 +1,173 @@
+###
+GRPC localhost:50051/moviecontroller.MovieControllerService/getMovie
+
+{
+  "genre" : "1",
+  "userid": "abc"
+}
+
+###
+GRPC localhost:50051/HelloWorldService/hello
+
+{
+  "text" : "asdasfdaf"
+}
+
+###
+GRPC localhost/HelloWorldService/hello
+
+###
+GRPC localhost:50051/com.beansmith.Greeter/SayHello
+X: header-x
+y: 1111.1
+z: yet another
+a: 1212131313
+
+{
+  "name": "Martin",
+  "surname": "smith",
+  "message": "welcome to the pleasuredome"
+}
+
+<> 2022-12-29T231032.OK.json
+<> 2022-12-29T230259.OK.json
+<> 2022-12-29T230234.OK.json
+<> 2022-12-29T145937.OK.json
+<> 2022-12-29T010018.OK.json
+<> 2022-12-28T122919.OK.json
+<> 2022-12-28T121307.OK.json
+<> 2022-12-28T121046.OK.json
+<> 2022-12-28T120958.OK.json
+<> 2022-12-25T175903.OK.json
+<> 2022-12-25T174140.OK.json
+<> 2022-12-25T172430.OK.json
+<> 2022-12-25T171331.OK.json
+<> 2022-12-25T170202.OK.json
+<> 2022-12-22T192452-1.OK.json
+<> 2022-12-22T192452.OK.json
+<> 2022-12-22T192450.OK.json
+<> 2022-12-22T192350.OK.json
+<> 2022-12-22T192343.OK.json
+<> 2022-11-24T172230.OK.json
+<> 2022-11-24T172206.OK.json
+<> 2022-11-24T172122.OK.json
+<> 2022-11-24T172105.OK.json
+<> 2022-11-24T171929.OK.json
+<> 2022-11-24T152326.OK.json
+<> 2022-11-24T151543.OK.json
+<> 2022-11-24T151424.OK.json
+<> 2022-11-24T151233.OK.json
+<> 2022-11-24T151134.OK.json
+<> 2022-11-24T150315.OK.json
+<> 2022-11-24T145757.OK.json
+<> 2022-11-20T212517.OK.json
+<> 2022-11-20T212505.OK.json
+<> 2022-11-20T212448.OK.json
+<> 2022-11-20T000405.OK.json
+<> 2022-11-19T222944.OK.json
+<> 2022-11-19T222730.OK.json
+<> 2022-11-17T231559.OK.json
+<> 2022-11-17T222539.OK.json
+<> 2022-11-17T214552.OK.json
+<> 2022-11-17T214537.OK.json
+<> 2022-11-17T205517.OK.json
+
+###
+GRPC localhost:50051/com.beansmith.Greeter/sendTestEntity
+
+{
+  "name": "Martin",
+  "surname": "smith",
+  "message": "welcome to the pleasuredome"
+}
+
+
+<> 2022-12-10T205228.OK.json
+<> 2022-12-10T195749.OK.json
+
+
+###
+GRPC localhost:50051/com.beansmith.Greeter/sendTableData
+
+{
+  "name": "parent",
+  "kvp": [
+    {
+      "key": "one",
+      "value": {
+        "intValue": 12
+      }
+    },
+    {
+      "key": "string",
+      "value": {
+        "stringValue": "this is a string"
+      }
+    },
+    {
+      "key": "looong",
+      "value": {
+        "longValue": "12345"
+      }
+    }
+  ],
+  "child": [
+    {
+      "name": "child",
+      "kvp": [
+        {
+          "key": "one",
+          "value": {
+            "intValue": 12
+          }
+        },
+        {
+          "key": "string",
+          "value": {
+            "stringValue": "this is a string"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+###
+GRPC localhost:50051/com.crd.alpha.edm.domain.DomainService/sendTestEntity
+
+{
+  "tableName": "parent"
+}
+
+<> 2023-01-01T224951.OK.json
+<> 2023-01-01T224931.OK.json
+<> 2023-01-01T224907.OK.json
+
+###.edm.domain.DomainService/sendTestEntity
+GRPC localhost:50051/com.crd.alpha.edm.domain.DomainService/fetchByPrimaryKey
+
+{
+  "primaryKey": 100
+}
+
+<> 2023-01-02T191225.OK.json
+<> 2023-01-02T191139.OK.json
+<> 2023-01-02T191018.OK.json
+<> 2023-01-02T172024.OK.json
+<> 2023-01-02T162843.OK.json
+<> 2023-01-02T161230.OK.json
+<> 2023-01-02T161224.OK.json
+<> 2023-01-02T160433.OK.json
+<> 2023-01-02T160236.OK.json
+<> 2023-01-02T155837.OK.json
+
+###
+GRPC localhost:50051/com.crd.alpha.edm.domain.DomainService/fetchByPrimaryKeys
+
+{
+  "primaryKey": [1,2,3,10]
+}
+
+<> 2023-01-02T180749.OK.json
+<> 2023-01-02T175009.OK.json
+<> 2023-01-02T174749.OK.json
